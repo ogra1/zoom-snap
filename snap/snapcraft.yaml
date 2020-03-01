@@ -1,0 +1,124 @@
+name: zoom-client
+base: core18
+adopt-info: zoom
+summary: ZOOM Cloud Meetings
+description: |
+  Video conferencing with real-time messaging and content sharing
+
+  https://zoom.us provides simplified video conferencing, whiteboard sharing
+  and messaging across any device. This is an unofficial re-pack of the debian
+  package provided by zoom.us
+
+  For proper operation please connect the following interfaces after install
+
+  sudo snap connect zoom-client:audio-record
+  sudo snap connect zoom-client:camera
+  sudo snap connect zoom-client:hardware-observe
+  sudo snap connect zoom-client:network-manager
+  sudo snap connect zoom-client:process-control
+  sudo snap connect zoom-client:system-observe
+
+grade: stable
+confinement: strict
+
+apps:
+  zoom-client:
+    command: desktop-launch $SNAP/zoom/zoom
+    environment:
+      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
+      QT_AUTO_SCREEN_SCALE_FACTOR: 1
+    plugs:
+      - audio-playback
+      - audio-record
+      - camera
+      - desktop
+      - hardware-observe
+      - home
+      - network
+      - network-bind
+      - network-manager
+      - opengl
+      - process-control
+      - removable-media
+      - system-observe
+      - unity7
+      - x11
+
+layout:
+  /sbin/killal5:
+    bind-file: $SNAP/sbin/killall5
+  /usr/bin/lscpu:
+    bind-file: $SNAP/usr/bin/lscpu
+  /usr/share/X11/xkb:
+    bind: $SNAP/usr/share/X11/xkb
+
+parts:
+  qt5:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: qt
+    plugin: make
+    make-parameters: ["FLAVOR=qt5"]
+    build-packages:
+      - qtbase5-dev
+      - dpkg-dev
+    stage-packages:
+      - libxkbcommon0
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - gnome-themes-standard
+      - shared-mime-info
+      - libqt5gui5
+      - libgdk-pixbuf2.0-0
+      - libgtk2.0-0
+      - libqt5svg5 # for loading icon themes which are svg
+      - try: [appmenu-qt5] # not available on core18
+      - locales-all
+  zoom:
+    source: https://zoom.us/client/latest/zoom_amd64.deb
+    source-type: deb
+    plugin: nil
+    after: [ qt5 ]
+    override-build: |
+      cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
+      VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
+      snapcraftctl set-version $VER
+    stage-packages:
+      - libasound2
+      - libatk-bridge2.0-0
+      - libatk1.0-0
+      - libatspi2.0-0
+      - libcairo-gobject2
+      - libepoxy0
+      - libgtk-3-0
+      - libnspr4
+      - libnss3
+      - libpulse-mainloop-glib0
+      - libqt53dcore5
+      - libqt53dinput5
+      - libqt53dlogic5
+      - libqt53dquick5
+      - libqt5concurrent5
+      - libqt5core5a
+      - libqt5dbus5
+      - libqt5multimedia5
+      - libqt5network5
+      - libqt5qml5
+      - libqt5quickparticles5
+      - libqt5quick5
+      - libqt5sql5
+      - libqt5widgets5
+      - libqt5gui5
+      - libqt5xmlpatterns5
+      - libwayland-cursor0
+      - libwayland-egl1
+      - libxcb-xtest0
+      - libxcomposite1
+      - libxcursor1
+      - libxinerama1
+      - libxrandr2
+      - libxtst6
+      - pulseaudio-utils
+      - sysvinit-utils
+      - util-linux

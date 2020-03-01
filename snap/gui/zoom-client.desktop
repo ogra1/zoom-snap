@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Zoom.us
+Icon=${SNAP}/meta/gui/icon.png
+Exec=zoom-client
+Terminal=false
+Categories=Utility;
