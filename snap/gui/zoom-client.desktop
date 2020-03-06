@@ -3,5 +3,6 @@ Type=Application
 Name=Zoom.us
 Icon=${SNAP}/meta/gui/icon.png
 Exec=zoom-client
+StartupWMClass=zoom
 Terminal=false
 Categories=Utility;
