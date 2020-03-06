@@ -43,7 +43,6 @@ apps:
       - network-manager
       - opengl
       - process-control
-      - pulseaudio
       - removable-media
       - screen-inhibit-control
       - system-observe
