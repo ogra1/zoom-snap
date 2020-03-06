@@ -100,6 +100,7 @@ parts:
       - libgtk-3-0
       - libnspr4
       - libnss3
+      - libpcre3
       - libpulse-mainloop-glib0
       - libqt53dcore5
       - libqt53dinput5
@@ -109,6 +110,7 @@ parts:
       - libqt5core5a
       - libqt5dbus5
       - libqt5multimedia5
+      - libqt5multimedia5-plugins
       - libqt5network5
       - libqt5printsupport5
       - libqt5qml5
@@ -118,6 +120,7 @@ parts:
       - libqt5widgets5
       - libqt5gui5
       - libqt5xmlpatterns5
+      - libtinfo5
       - libwayland-cursor0
       - libwayland-egl1
       - libxcb-xtest0
