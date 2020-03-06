@@ -31,6 +31,7 @@ apps:
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
+      TMPDIR: $XDG_RUNTIME_DIR
     plugs:
       - audio-playback
       - audio-record
