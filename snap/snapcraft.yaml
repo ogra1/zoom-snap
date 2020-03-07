@@ -27,7 +27,7 @@ architectures:
 
 apps:
   zoom-client:
-    command: desktop-launch $SNAP/zoom/zoom
+    command: desktop-launch $SNAP/zoom/ZoomLauncher
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
@@ -87,6 +87,7 @@ parts:
     plugin: nil
     after: [ qt5 ]
     override-build: |
+      sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
@@ -121,6 +122,7 @@ parts:
       - libqt5gui5
       - libqt5xmlpatterns5
       - libtinfo5
+      - libv4l-0
       - libwayland-cursor0
       - libwayland-egl1
       - libxcb-xtest0
