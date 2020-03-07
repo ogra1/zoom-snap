@@ -27,7 +27,7 @@ architectures:
 
 apps:
   zoom-client:
-    command: desktop-launch $SNAP/zoom/ZoomLauncher
+    command: desktop-launch $SNAP/zoom/zoom
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
