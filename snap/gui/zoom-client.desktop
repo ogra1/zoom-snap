@@ -1,8 +1,13 @@
 [Desktop Entry]
-Type=Application
-Name=Zoom.us
+Name=Zoom
+Comment=Zoom Video Conference
+Exec=zoom-client %U
 Icon=${SNAP}/meta/gui/icon.png
-Exec=zoom-client
-StartupWMClass=zoom
 Terminal=false
-Categories=Utility;
+Type=Application
+Encoding=UTF-8
+Categories=Network;Application;
+StartupWMClass=Zoom
+MimeType=x-scheme-handler/zoommtg;x-scheme-handler/zoomus;x-scheme-handler/tel;x-scheme-handler/callto;x-scheme-handler/zoomphonecall;application/x-zoom;
+X-KDE-Protocols=zoommtg;zoomus;tel;callto;zoomphonecall;
+Name[en_US]=Zoom
