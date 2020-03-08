@@ -27,14 +27,10 @@ architectures:
 
 apps:
   zoom-client:
-    command: desktop-launch $SNAP/zoom/zoom
+    command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/zoom/zoom
     environment:
-      GST_PLUGIN_SCANNER: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
-      GST_PLUGIN_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gstreamer-1.0
-      GST_PLUGIN_SYSTEM_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gstreamer-1.0
-      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
+      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
-      TMPDIR: $XDG_RUNTIME_DIR
     plugs:
       - audio-playback
       - audio-record
@@ -60,6 +56,8 @@ layout:
     bind-file: $SNAP/usr/bin/lscpu
   /usr/share/X11/xkb:
     bind: $SNAP/usr/share/X11/xkb
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
 
 parts:
   qt5:
@@ -84,19 +82,27 @@ parts:
       - libqt5svg5 # for loading icon themes which are svg
       - try: [appmenu-qt5] # not available on core18
       - locales-all
+  alsa-mixin:
+    plugin: dump
+    after: [ qt5 ]
+    source: https://github.com/diddlesnaps/snapcraft-alsa.git
+    source-subdir: snapcraft-assets
+    build-packages:
+      - libasound2-dev
+    stage-packages:
+      - libasound2
+      - libasound2-plugins
   zoom:
     source: https://zoom.us/client/latest/zoom_amd64.deb
     source-type: deb
     plugin: nil
-    after: [ qt5 ]
+    after: [ alsa-mixin ]
     override-build: |
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
-    build-attributes: [keep-execstack]
     stage-packages:
-      - libasound2
       - libatk-bridge2.0-0
       - libatk1.0-0
       - libatspi2.0-0
@@ -108,10 +114,6 @@ parts:
       - libgtk-3-0
       - libgl1-mesa-glx
       - libglib2.0-0
-      - libgstreamer1.0-0
-      - libgstreamer-plugins-bad1.0-0
-      - libgstreamer-plugins-base1.0-0
-      - libgstreamer-plugins-good1.0-0
       - libnspr4
       - libnss3
       - libpcre3
