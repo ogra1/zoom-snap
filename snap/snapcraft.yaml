@@ -97,11 +97,17 @@ parts:
       - libatk1.0-0
       - libatspi2.0-0
       - libcairo-gobject2
+      - libdbus-1-3
+      - libegl1-mesa
       - libepoxy0
+      - libfontconfig1
       - libgtk-3-0
+      - libgl1-mesa-glx
+      - libglib2.0-0
       - libnspr4
       - libnss3
       - libpcre3
+      - libpulse0
       - libpulse-mainloop-glib0
       - libqt53dcore5
       - libqt53dinput5
@@ -121,15 +127,26 @@ parts:
       - libqt5widgets5
       - libqt5gui5
       - libqt5xmlpatterns5
+      - libsm6
+      - libsqlite3-0
       - libtinfo5
       - libv4l-0
       - libwayland-cursor0
       - libwayland-egl1
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-shape0
+      - libxcb-shm0
+      - libxcb-xfixes0
       - libxcb-xtest0
       - libxcomposite1
       - libxcursor1
+      - libxi6
       - libxinerama1
       - libxrandr2
+      - libxrender1
+      - libxslt1.1
       - libxtst6
       - pulseaudio-utils
       - sysvinit-utils
