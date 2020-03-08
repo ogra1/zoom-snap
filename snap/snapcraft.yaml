@@ -29,6 +29,9 @@ apps:
   zoom-client:
     command: desktop-launch $SNAP/zoom/zoom
     environment:
+      GST_PLUGIN_SCANNER: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
+      GST_PLUGIN_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gstreamer-1.0
+      GST_PLUGIN_SYSTEM_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/gstreamer-1.0
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
       TMPDIR: $XDG_RUNTIME_DIR
@@ -91,6 +94,7 @@ parts:
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
+    build-attributes: [keep-execstack]
     stage-packages:
       - libasound2
       - libatk-bridge2.0-0
@@ -104,6 +108,10 @@ parts:
       - libgtk-3-0
       - libgl1-mesa-glx
       - libglib2.0-0
+      - libgstreamer1.0-0
+      - libgstreamer-plugins-bad1.0-0
+      - libgstreamer-plugins-base1.0-0
+      - libgstreamer-plugins-good1.0-0
       - libnspr4
       - libnss3
       - libpcre3
@@ -113,6 +121,8 @@ parts:
       - libqt53dinput5
       - libqt53dlogic5
       - libqt53dquick5
+      - libqt53dquickscene2d5
+      - libqt53drender5
       - libqt5concurrent5
       - libqt5core5a
       - libqt5dbus5
@@ -121,7 +131,9 @@ parts:
       - libqt5network5
       - libqt5printsupport5
       - libqt5qml5
+      - libqt5quickcontrols2-5
       - libqt5quickparticles5
+      - libqt5quicktemplates2-5
       - libqt5quick5
       - libqt5sql5
       - libqt5widgets5
