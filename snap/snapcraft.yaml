@@ -50,7 +50,7 @@ apps:
       - x11
 
 layout:
-  /sbin/killal5:
+  /sbin/killall5:
     bind-file: $SNAP/sbin/killall5
   /usr/bin/lscpu:
     bind-file: $SNAP/usr/bin/lscpu
