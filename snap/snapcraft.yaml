@@ -145,6 +145,7 @@ parts:
       - libsm6
       - libsqlite3-0
       - libtinfo5
+      - libusb-1.0-0
       - libv4l-0
       - libwayland-cursor0
       - libwayland-egl1
@@ -166,3 +167,16 @@ parts:
       - pulseaudio-utils
       - sysvinit-utils
       - util-linux
+  cleanup:
+    source: .
+    plugin: nil
+    after: [ zoom ]
+    override-prime: |
+      for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name '*lib*'); do
+        echo "checking $(basename $lib)"
+        if ! echo "$lib" | grep -q -e "libicuuc.so" -e "libicui18n.so" -e "libicudata.so"; then
+          for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*"); do
+            rm -fv $files
+          done
+        fi
+      done
