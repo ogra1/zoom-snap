@@ -100,6 +100,11 @@ parts:
     override-build: |
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
+      # replace zopen with xdg-open
+      rm $SNAPCRAFT_PART_INSTALL/zoom/zopen
+      echo '#! /bin/sh' >$SNAPCRAFT_PART_INSTALL/zoom/zopen
+      echo 'exec xdg-open "$@"' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
+      chmod +x $SNAPCRAFT_PART_INSTALL/zoom/zopen
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
     stage-packages:
