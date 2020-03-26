@@ -103,7 +103,9 @@ parts:
       # replace zopen with xdg-open
       rm $SNAPCRAFT_PART_INSTALL/zoom/zopen
       echo '#! /bin/sh' >$SNAPCRAFT_PART_INSTALL/zoom/zopen
-      echo 'exec xdg-open "$@"' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
+      echo '' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
+      echo 'echo "xdg-open args: $@"' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
+      echo 'exec xdg-open $@' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
       chmod +x $SNAPCRAFT_PART_INSTALL/zoom/zopen
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
