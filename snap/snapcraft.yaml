@@ -101,11 +101,7 @@ parts:
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
       # replace zopen with xdg-open
-      rm $SNAPCRAFT_PART_INSTALL/zoom/zopen
-      echo '#! /bin/sh' >$SNAPCRAFT_PART_INSTALL/zoom/zopen
-      echo '' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
-      echo 'exec /usr/bin/xdg-open "$@"' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
-      chmod +x $SNAPCRAFT_PART_INSTALL/zoom/zopen
+      ln -sf /usr/bin/xdg-open $SNAPCRAFT_PART_INSTALL/zoom/zopen
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
     stage-packages:
@@ -173,6 +169,10 @@ parts:
       - pulseaudio-utils
       - sysvinit-utils
       - util-linux
+      - libglu1-mesa
+      - libgl1-mesa-dri
+      - libv4lconvert0
+      - libgsl23
   cleanup:
     source: .
     plugin: nil
