@@ -31,6 +31,7 @@ apps:
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
+    desktop: usr/share/applications/Zoom.desktop
     plugs:
       - audio-playback
       - audio-record
@@ -100,6 +101,13 @@ parts:
     override-build: |
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
+      cp -av usr $SNAPCRAFT_PART_INSTALL/
+
+      # fix icon and exec lines in desktop file
+      sed -i 's|Icon=.*|Icon=${SNAP}/usr/share/pixmaps/Zoom.png|g' \
+        $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
+      sed -i 's|Exec=.*|Exec=zoom-client %U|g' \
+        $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
 
       # replace zopen with xdg-open
       rm $SNAPCRAFT_PART_INSTALL/zoom/zopen
