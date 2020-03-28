@@ -27,7 +27,7 @@ architectures:
 
 apps:
   zoom-client:
-    command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/zoom/ZoomLauncher
+    command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/bin/launcher.sh
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       QT_AUTO_SCREEN_SCALE_FACTOR: 1
@@ -176,6 +176,9 @@ parts:
     source: .
     plugin: nil
     after: [ zoom ]
+    override-build: |
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp -av launcher.sh $SNAPCRAFT_PART_INSTALL/bin/
     override-prime: |
       snapcraftctl prime
       for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name '*lib*'); do
