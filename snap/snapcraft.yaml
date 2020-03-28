@@ -103,6 +103,9 @@ parts:
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
       cp -av usr $SNAPCRAFT_PART_INSTALL/
 
+      # remove danging symlink
+      rm -rf $SNAPCRAFT_PART_INSTALL/usr/bin/zoom
+
       # fix icon and exec lines in desktop file
       sed -i 's|Icon=.*|Icon=${SNAP}/usr/share/pixmaps/Zoom.png|g' \
         $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
