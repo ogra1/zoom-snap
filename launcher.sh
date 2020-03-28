@@ -33,4 +33,7 @@ if [ -e "/var/lib/snapd/lib/gl/xorg/nvidia_drv.so" ]; then
       $NV_PATH/vdpau/libvdpau_nvidia.so | tr '\n' ' ') "
 fi
 
-exec $SNAP/zoom/ZoomLauncher "$@"
+ZOOM_LOGS="$SNAP_USER_DATA/.zoom/logs"
+mkdir -p $ZOOM_LOGS
+
+exec $SNAP/zoom/ZoomLauncher "$@" >> "$ZOOM_LOGS/zoom-terminal.log" 2>&1
