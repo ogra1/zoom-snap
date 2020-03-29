@@ -34,6 +34,9 @@ if [ -e "/var/lib/snapd/lib/gl/xorg/nvidia_drv.so" ]; then
 fi
 
 ZOOM_LOGS="$SNAP_USER_DATA/.zoom/logs"
-mkdir -p $ZOOM_LOGS
+LOGFILE="$ZOOM_LOGS/zoom-terminal.log"
 
-exec $SNAP/zoom/ZoomLauncher "$@" >> "$ZOOM_LOGS/zoom-terminal.log" 2>&1
+mkdir -p $ZOOM_LOGS
+mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
+
+exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
