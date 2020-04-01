@@ -4,7 +4,7 @@
 # assuming all libs are in ram already. on nvidia systems we need
 # to make sure the GL libs are (pre)loaded before the mesa ones
 
-if [ -e "/var/lib/snapd/lib/gl/xorg/nvidia_drv.so" ]; then
+if [ -e /var/lib/snapd/lib/gl/libnvidia-glcore.so* ]; then
   NV_PATH="/var/lib/snapd/lib/gl"
   export LIBGL_DRIVERS_PATH="$NV_PATH/xorg"
 
