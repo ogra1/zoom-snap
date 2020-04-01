@@ -8,8 +8,14 @@ if [ -e /var/lib/snapd/lib/gl/libnvidia-glcore.so* ]; then
   NV_PATH="/var/lib/snapd/lib/gl"
   export LIBGL_DRIVERS_PATH="$NV_PATH/xorg"
 
+  if [ -e $NV_PATH/tls/libnvidia-tls.so.* ]; then
+         TLS="$(ls -1 -f $NV_PATH/tls/libnvidia-tls.so.*)"
+  else
+         TLS="$(ls -1 -f $NV_PATH/libnvidia-tls.so.*)"
+  fi
+
   export LD_PRELOAD="$(ls -1 -f \
-      $NV_PATH/tls/libnvidia-tls.so.* \
+      $TLS \
       $NV_PATH/libnvidia-glcore.so.* \
       $NV_PATH/libnvidia-glsi.so.* \
       $NV_PATH/libnvidia-eglcore.so.* \
@@ -23,8 +29,7 @@ if [ -e /var/lib/snapd/lib/gl/libnvidia-glcore.so* ]; then
       $NV_PATH/libOpenGL.so \
       $NV_PATH/libnvcuvid.so \
       $NV_PATH/libnvidia-cfg.so \
-      $NV_PATH/libnvidia-compiler.so \
-      $NV_PATH/libnvidia-egl-wayland.so.? \
+      $NV_PATH/libnvidia-compiler.so* \
       $NV_PATH/libnvidia-encode.so \
       $NV_PATH/libnvidia-fbc.so \
       $NV_PATH/libnvidia-ifr.so \
