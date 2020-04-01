@@ -39,4 +39,9 @@ LOGFILE="$ZOOM_LOGS/zoom-terminal.log"
 mkdir -p $ZOOM_LOGS
 mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
 
+# collect info about nvidia setup
+echo "Nvidia debug" >"$LOGFILE"
+find /var/lib/snapd/lib/gl >>"$LOGFILE" 2>&1 || true
+echo "" >>"$LOGFILE"
+
 exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
