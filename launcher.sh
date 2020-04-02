@@ -7,7 +7,6 @@
 NV_PATH="/var/lib/snapd/lib/gl"
 
 if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
-  export LIBGL_DRIVERS_PATH="$NV_PATH/xorg"
 
   if [ -e $NV_PATH/tls/libnvidia-tls.so.* ]; then
          TLS="$(ls -1 -f $NV_PATH/tls/libnvidia-tls.so.*)"
@@ -18,24 +17,9 @@ if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
   export LD_PRELOAD="$(ls -1 -f \
       $TLS \
       $NV_PATH/libnvidia-glcore.so.* \
-      $NV_PATH/libnvidia-glsi.so.* \
-      $NV_PATH/libnvidia-eglcore.so.* \
-      $NV_PATH/libnvidia-fatbinaryloader.so.* \
-      $NV_PATH/libGLdispatch.so.* \
-      $NV_PATH/libGL.so \
-      $NV_PATH/libGLESv1_CM.so \
-      $NV_PATH/libGLESv2.so \
-      $NV_PATH/libGLX.so \
-      $NV_PATH/libOpenGL.so \
-      $NV_PATH/libnvcuvid.so \
-      $NV_PATH/libnvidia-cfg.so \
-      $NV_PATH/libnvidia-compiler.so* \
-      $NV_PATH/libnvidia-encode.so \
-      $NV_PATH/libnvidia-fbc.so \
-      $NV_PATH/libnvidia-ifr.so \
-      $NV_PATH/libnvidia-ml.so \
-      $NV_PATH/libnvidia-ptxjitcompiler.so.? \
-      $NV_PATH/vdpau/libvdpau_nvidia.so | tr '\n' ' ') "
+      $NV_PATH/libGLdispatch.so* \
+      $NV_PATH/libGL.so* \
+      $NV_PATH/libOpenGL.so* | tr '\n' ' ') "
 fi
 
 ZOOM_LOGS="$SNAP_USER_DATA/.zoom/logs"
