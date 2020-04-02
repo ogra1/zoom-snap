@@ -18,6 +18,7 @@ if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
       $TLS \
       $NV_PATH/libnvidia-glcore.so.* \
       $NV_PATH/libGLdispatch.so* \
+      $NV_PATH/libGLX.so* \
       $NV_PATH/libGL.so* \
       $NV_PATH/libOpenGL.so* | tr '\n' ' ') "
 fi
