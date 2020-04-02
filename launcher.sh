@@ -4,8 +4,9 @@
 # assuming all libs are in ram already. on nvidia systems we need
 # to make sure the GL libs are (pre)loaded before the mesa ones
 
-if [ -e /var/lib/snapd/lib/gl/libnvidia-glcore.so* ]; then
-  NV_PATH="/var/lib/snapd/lib/gl"
+NV_PATH="/var/lib/snapd/lib/gl"
+
+if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
   export LIBGL_DRIVERS_PATH="$NV_PATH/xorg"
 
   if [ -e $NV_PATH/tls/libnvidia-tls.so.* ]; then
@@ -22,7 +23,6 @@ if [ -e /var/lib/snapd/lib/gl/libnvidia-glcore.so* ]; then
       $NV_PATH/libnvidia-fatbinaryloader.so.* \
       $NV_PATH/libGLdispatch.so.* \
       $NV_PATH/libGL.so \
-      $NV_PATH/libEGL.so \
       $NV_PATH/libGLESv1_CM.so \
       $NV_PATH/libGLESv2.so \
       $NV_PATH/libGLX.so \
@@ -45,8 +45,14 @@ mkdir -p $ZOOM_LOGS
 mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
 
 # collect info about nvidia setup
-echo "Nvidia debug" >"$LOGFILE"
-find /var/lib/snapd/lib/gl >>"$LOGFILE" 2>&1 || true
-echo "" >>"$LOGFILE"
+if [ "$(ls -A $NV_PATH)" ]; then
+    echo -n "Nvidia version: " >"$LOGFILE"
+    if [ -e /var/lib/snapd/lib/gl/ld.so.conf ]; then
+    	cat /var/lib/snapd/lib/gl/ld.so.conf | sed 's/^.*\///' | uniq >>"$LOGFILE" 2>&1 || true
+        echo "----------" >>"$LOGFILE"
+    fi
+    find /var/lib/snapd/lib/gl >>"$LOGFILE" 2>&1 || true
+    echo "" >>"$LOGFILE"
+fi
 
 exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
