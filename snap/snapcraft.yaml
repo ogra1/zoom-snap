@@ -15,7 +15,6 @@ description: |
   sudo snap connect zoom-client:camera
   sudo snap connect zoom-client:hardware-observe
   sudo snap connect zoom-client:network-manager
-  sudo snap connect zoom-client:process-control
   sudo snap connect zoom-client:system-observe
 
 grade: stable
@@ -43,7 +42,6 @@ apps:
       - network-bind
       - network-manager
       - opengl
-      - process-control
       - pulseaudio
       - removable-media
       - screen-inhibit-control
