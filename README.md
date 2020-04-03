@@ -22,7 +22,6 @@ For proper operation please connect the following interfaces after install
    sudo snap connect zoom-client:camera
    sudo snap connect zoom-client:hardware-observe
    sudo snap connect zoom-client:network-manager
-   sudo snap connect zoom-client:process-control
    sudo snap connect zoom-client:system-observe
 ```
 # Building
