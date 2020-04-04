@@ -161,6 +161,7 @@ parts:
       - libqt5xmlpatterns5
       - libsm6
       - libsqlite3-0
+      - libssl1.0.0
       - libtinfo5
       - libwayland-cursor0
       - libwayland-egl1
@@ -202,11 +203,13 @@ parts:
       # awful hack, zoom hardcodes LD_LIBRARY_PATH to $SNAP/zoom, link all
       # libs into that dir so they can be found at runtime
       LIBDIR="usr/lib/$SNAPCRAFT_ARCH_TRIPLET"
-      for dir in $LIBDIR $LIBDIR/dri $LIBDIR/pulseaudio lib/$SNAPCRAFT_ARCH_TRIPLET; do
+      for dir in $LIBDIR $LIBDIR/openssl-1.0.0 $LIBDIR/dri $LIBDIR/pulseaudio lib/$SNAPCRAFT_ARCH_TRIPLET; do
         for file in $(find $dir -maxdepth 1 -name '*.so*'); do
           ln -sf ../$file zoom/$(basename $file);
         done
       done
+      rm zoom/libssl.so.1.1
+      rm zoom/libcrypto.so.1.1
       # clean up unused cruft
       for CRUFT in bug lintian man; do
         rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
