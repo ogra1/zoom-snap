@@ -29,7 +29,6 @@ apps:
     command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/bin/launcher.sh
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
-      QT_AUTO_SCREEN_SCALE_FACTOR: 1
     desktop: usr/share/applications/Zoom.desktop
     plugs:
       - audio-playback
@@ -183,6 +182,7 @@ parts:
       - pulseaudio-utils
       - sysvinit-utils
       - util-linux
+      - x11-xserver-utils
   cleanup:
     source: .
     plugin: nil
