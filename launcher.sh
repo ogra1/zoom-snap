@@ -41,7 +41,7 @@ if [ "$(ls -A $NV_PATH)" ]; then
 fi
 
 # scale according to dpi
-DPI="$(xrdb -query 2>/dev/null| grep dpi | sed 's/^.*\t//')"
+DPI="$(xrdb -query 2>/dev/null| grep dpi | sed 's/^.*\t//;s/\..*$//')"
 if [ -n "$DPI" ]; then
   if [ "$DPI" -le 96 ]; then
           SCALE=""
