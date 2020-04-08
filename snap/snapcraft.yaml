@@ -14,7 +14,7 @@ description: |
   sudo snap connect zoom-client:audio-record
   sudo snap connect zoom-client:camera
   sudo snap connect zoom-client:hardware-observe
-  sudo snap connect zoom-client:network-manager
+  sudo snap connect zoom-client:network-manager-observe
   sudo snap connect zoom-client:system-observe
 
 grade: stable
@@ -39,7 +39,7 @@ apps:
       - home
       - network
       - network-bind
-      - network-manager
+      - network-manager-observe
       - opengl
       - pulseaudio
       - removable-media
