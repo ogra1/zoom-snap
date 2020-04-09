@@ -155,6 +155,7 @@ parts:
       - libqt5quicktemplates2-5
       - libqt5quick5
       - libqt5sql5
+      - libqt5waylandclient5
       - libqt5widgets5
       - libqt5gui5
       - libqt5xmlpatterns5
