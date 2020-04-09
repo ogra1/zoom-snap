@@ -14,13 +14,19 @@ if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
          TLS="$(ls -1 -f $NV_PATH/libnvidia-tls.so.*)"
   fi
 
+  # fix vor nvidia-440
+  if [ -e $NV_PATH/libOpenGL.so ]; then
+         OGL="$(ls -1 -f $NV_PATH/libOpenGL.so)"
+  else
+         OGL="$(ls -1 -f $NV_PATH/libGLX_nvidia*)"
+  fi
+
   export LD_PRELOAD="$(ls -1 -f \
       $TLS \
       $NV_PATH/libnvidia-glcore.so.* \
       $NV_PATH/libGLdispatch.so* \
       $NV_PATH/libGL.so* \
-      $NV_PATH/libOpenGL.so* \
-      $NV_PATH/libGLX.so | tr '\n' ' ') "
+      $OGL | tr '\n' ' ') "
 fi
 
 ZOOM_LOGS="$SNAP_USER_DATA/.zoom/logs"
@@ -32,10 +38,7 @@ mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
 # collect info about nvidia setup
 if [ "$(ls -A $NV_PATH)" ]; then
     echo -n "Nvidia version: " >"$LOGFILE"
-    if [ -e /var/lib/snapd/lib/gl/ld.so.conf ]; then
-    	cat /var/lib/snapd/lib/gl/ld.so.conf | sed 's/^.*\///' | uniq >>"$LOGFILE" 2>&1 || true
-        echo "----------" >>"$LOGFILE"
-    fi
+    echo "$(echo $TLS | sed 's/^.*-tls.so.//;s/\..*$//')" >>"$LOGFILE" 2>&1
     find /var/lib/snapd/lib/gl >>"$LOGFILE" 2>&1 || true
     echo "" >>"$LOGFILE"
 fi
