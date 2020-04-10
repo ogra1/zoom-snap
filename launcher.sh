@@ -70,4 +70,7 @@ if [ -n "$SCALE" ]; then
   export QT_SCALE_FACTOR="$SCALE"
 fi
 
+# until we have a better option ...
+export DISABLE_WAYLAND=1
+
 exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
