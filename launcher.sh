@@ -14,6 +14,8 @@ if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
          TLS="$(ls -1 -f $NV_PATH/libnvidia-tls.so.*)"
   fi
 
+  VER="$(echo $TLS | sed 's/^.*-tls.so.//;s/\..*$//')"
+
   # fix for nvidia-440
   if [ -e $NV_PATH/libGLX_nvidia.so.4* ]; then
          OGL="$(ls -1 -f $NV_PATH/libGLX_nvidia.so.4*)"
@@ -38,7 +40,7 @@ mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
 # collect info about nvidia setup
 if [ "$(ls -A $NV_PATH)" ]; then
     echo -n "Nvidia version: " >"$LOGFILE"
-    echo "$(echo $TLS | sed 's/^.*-tls.so.//;s/\..*$//')" >>"$LOGFILE" 2>&1
+    echo $VER >>"$LOGFILE" 2>&1
     find /var/lib/snapd/lib/gl >>"$LOGFILE" 2>&1 || true
     echo "" >>"$LOGFILE"
 fi
