@@ -14,11 +14,11 @@ if [ -e $NV_PATH/libnvidia-glcore.so* ]; then
          TLS="$(ls -1 -f $NV_PATH/libnvidia-tls.so.*)"
   fi
 
-  # fix vor nvidia-440
-  if [ -e $NV_PATH/libOpenGL.so ]; then
-         OGL="$(ls -1 -f $NV_PATH/libOpenGL.so)"
+  # fix for nvidia-440
+  if [ -e $NV_PATH/libGLX_nvidia.so.4* ]; then
+         OGL="$(ls -1 -f $NV_PATH/libGLX_nvidia.so.4*)"
   else
-         OGL="$(ls -1 -f $NV_PATH/libGLX_nvidia*)"
+         OGL="$(ls -1 -f $NV_PATH/libGLX.so*)"
   fi
 
   export LD_PRELOAD="$(ls -1 -f \
