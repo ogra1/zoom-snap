@@ -9,14 +9,6 @@ description: |
   and messaging across any device. This is an unofficial re-pack of the debian
   package provided by zoom.us
 
-  For proper operation please connect the following interfaces after install
-
-  sudo snap connect zoom-client:audio-record
-  sudo snap connect zoom-client:camera
-  sudo snap connect zoom-client:hardware-observe
-  sudo snap connect zoom-client:network-manager-observe
-  sudo snap connect zoom-client:system-observe
-
 grade: stable
 confinement: strict
 
@@ -40,7 +32,6 @@ apps:
       - home
       - network
       - network-bind
-      - network-manager
       - network-manager-observe
       - opengl
       - pulseaudio
