@@ -202,11 +202,13 @@ parts:
           ln -sf ../$file zoom/$(basename $file);
         done
       done
+      # Qt needs libssl 1.0 and gets confused if 1.1 is around
       rm zoom/libssl.so.1.1
       rm zoom/libcrypto.so.1.1
       # clean up unused cruft
-      for CRUFT in bug lintian man; do
+      for CRUFT in bug lintian man fonts icons themes; do
         rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
       done
       find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
       find $SNAPCRAFT_PRIME/usr/share -type d -empty -delete
+      rm -rf $SNAPCRAFT_PRIME/usr/lib/gcc
