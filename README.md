@@ -16,7 +16,6 @@ sudo snap install zoom-client
 ```
 Details about installing on various distributions that do not come with snapd out of the box can be found at the bottom of https://snapcraft.io/zoom-client
 
-```
 # Building
 
 To build the snap yourself, clone this github repo and run snapcraft in the top of the source tree:
