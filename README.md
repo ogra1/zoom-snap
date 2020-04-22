@@ -16,13 +16,6 @@ sudo snap install zoom-client
 ```
 Details about installing on various distributions that do not come with snapd out of the box can be found at the bottom of https://snapcraft.io/zoom-client
 
-For proper operation please connect the following interfaces after install
-```
-   sudo snap connect zoom-client:audio-record
-   sudo snap connect zoom-client:camera
-   sudo snap connect zoom-client:hardware-observe
-   sudo snap connect zoom-client:network-manager
-   sudo snap connect zoom-client:system-observe
 ```
 # Building
 
