@@ -90,6 +90,10 @@ parts:
     plugin: nil
     after: [ alsa-mixin ]
     override-build: |
+      # unset hardcoded LD_LIBRARY_PATHs
+      sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
+      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/libQt5Network.so.5.9.6 opt/zoom/libQt5WebEngineCore.so.5.9.6
+
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
       cp -av usr $SNAPCRAFT_PART_INSTALL/
@@ -186,6 +190,7 @@ parts:
       cp -av launcher.sh $SNAPCRAFT_PART_INSTALL/bin/
     override-prime: |
       snapcraftctl prime
+      # remove any duplicated libs
       for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name '*lib*'); do
         echo "checking duplicates: $(basename $lib)"
         if ! echo "$lib" | grep -q -e "libicuuc.so" -e "libicui18n.so" -e "libicudata.so"; then
@@ -194,17 +199,9 @@ parts:
           done
         fi
       done
-      # awful hack, zoom hardcodes LD_LIBRARY_PATH to $SNAP/zoom, link all
-      # libs into that dir so they can be found at runtime
-      LIBDIR="usr/lib/$SNAPCRAFT_ARCH_TRIPLET"
-      for dir in $LIBDIR $LIBDIR/openssl-1.0.0 $LIBDIR/dri $LIBDIR/pulseaudio lib/$SNAPCRAFT_ARCH_TRIPLET; do
-        for file in $(find $dir -maxdepth 1 -name '*.so*'); do
-          ln -sf ../$file zoom/$(basename $file);
-        done
-      done
       # Qt needs libssl 1.0 and gets confused if 1.1 is around
-      rm zoom/libssl.so.1.1
-      rm zoom/libcrypto.so.1.1
+      rm usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libssl.so.1.1
+      rm usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libcrypto.so.1.1
       # clean up unused cruft
       for CRUFT in bug lintian man fonts icons themes; do
         rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
