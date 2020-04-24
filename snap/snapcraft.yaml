@@ -126,6 +126,7 @@ parts:
       - libepoxy0
       - libfontconfig1
       - libgtk-3-0
+      - libgl1-mesa-dri
       - libgl1-mesa-glx
       - libglib2.0-0
       - libnspr4
@@ -162,6 +163,7 @@ parts:
       - libtinfo5
       - libwayland-cursor0
       - libwayland-egl1
+      - libx11-6
       - libxcb-image0
       - libxcb-keysyms1
       - libxcb-randr0
@@ -173,6 +175,7 @@ parts:
       - libxcursor1
       - libxi6
       - libxinerama1
+      - xkb-data
       - libxrandr2
       - libxrender1
       - libxslt1.1
