@@ -184,10 +184,24 @@ parts:
       - sysvinit-utils
       - util-linux
       - x11-xserver-utils
+  yaru-cursors:
+    plugin: nil
+    after: [ zoom ]
+    override-build: |
+      URL1="https://launchpad.net/ubuntu/focal/amd64/yaru-theme-icon"
+      URL2="https://launchpad.net/ubuntu/focal/+package/yaru-theme-icon"
+      DEB="$(wget -q -O- $URL1/$(wget -q -O- $URL2|grep amd64|grep href| \
+           sed 's/^.*\///;s/\".*$//'|tail -1)|grep \\.deb|sed 's/^.*href=\"//;s/\".*$//')"
+      wget -q -O- $DEB | dpkg -x - .
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru
+      cp -a usr/share/icons/Yaru/cursors $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru/
+      cp -a usr/share/icons/Yaru/cursor.theme $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru/
+    build-packages:
+      - wget
   cleanup:
     source: .
     plugin: nil
-    after: [ zoom ]
+    after: [ yaru-cursors ]
     override-build: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
       cp -av launcher.sh $SNAPCRAFT_PART_INSTALL/bin/
@@ -206,8 +220,15 @@ parts:
       rm usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libssl.so.1.1
       rm usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libcrypto.so.1.1
       # clean up unused cruft
-      for CRUFT in bug lintian man fonts icons themes; do
+      for CRUFT in bug lintian man fonts themes; do
         rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
+      done
+      # drop unused icon themes (keep cursors)
+      for icons in $(ls -d usr/share/icons/*); do
+        ICONS="$(basename "$icons")"
+        if [ "$ICONS" != "Yaru" ] && [ "$ICONS" != "DMZ-White" ] && [ "$ICONS" != "DMZ-Black" ]; then
+          rm -rf usr/share/icons/$ICONS
+        fi
       done
       find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
       find $SNAPCRAFT_PRIME/usr/share -type d -empty -delete

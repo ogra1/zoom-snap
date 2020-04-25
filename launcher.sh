@@ -26,6 +26,16 @@ if [ -n "$DPI" ]; then
   fi
 fi
 
+# fix mis-sized cursors by setting a sane default
+CURSOR="$(xrdb -query | grep Xcursor.theme | sed 's/^.*\t//;s/\..*$//')"
+export XCURSOR_PATH=$SNAP/usr/share/icons
+if [ -e "$XCURSOR_PATH/$CURSOR" ]; then
+  export XCURSOR_THEME=$CURSOR
+else
+  export XCURSOR_THEME=DMZ-Black
+fi
+echo "Cursor: $XCURSOR_THEME" >>"$LOGFILE" 2>&1
+
 if [ -n "$SCALE" ]; then
   echo "$DPI dpi, using scale factor: $SCALE" >>"$LOGFILE" 2>&1
   export QT_SCALE_FACTOR="$SCALE"
