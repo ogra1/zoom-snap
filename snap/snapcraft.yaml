@@ -92,7 +92,7 @@ parts:
     override-build: |
       # unset hardcoded LD_LIBRARY_PATHs
       sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
-      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/libQt5Network.so.5.9.6 opt/zoom/libQt5WebEngineCore.so.5.9.6
+      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/libQt5Network.so.5.9.6
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
