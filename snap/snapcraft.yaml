@@ -92,7 +92,7 @@ parts:
     override-build: |
       # unset hardcoded LD_LIBRARY_PATHs
       sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
-      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/libQt5Network.so.5.9.6
+      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/libQt5Network.so.5.9.6 opt/zoom/zopen
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
@@ -106,12 +106,6 @@ parts:
         $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
       sed -i 's|Exec=.*|Exec=zoom-client %U|g' \
         $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
-
-      # replace zopen with xdg-open
-      rm $SNAPCRAFT_PART_INSTALL/zoom/zopen
-      echo '#! /bin/sh' >$SNAPCRAFT_PART_INSTALL/zoom/zopen
-      echo 'exec /usr/bin/xdg-open $@' >>$SNAPCRAFT_PART_INSTALL/zoom/zopen
-      chmod +x $SNAPCRAFT_PART_INSTALL/zoom/zopen
 
       VER="$(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt)"
       snapcraftctl set-version $VER
