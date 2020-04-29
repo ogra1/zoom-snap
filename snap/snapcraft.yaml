@@ -164,6 +164,7 @@ parts:
       - libxcb-shape0
       - libxcb-shm0
       - libxcb-xfixes0
+      - libxcb-randr0
       - libxcb-xtest0
       - libxcomposite1
       - libxcursor1
