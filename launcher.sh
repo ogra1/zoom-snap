@@ -42,8 +42,8 @@ if [ -n "$SCALE" ]; then
 fi
 
 # make sure libssl is found
-export OPENSSL_ENGINES="$SNAP/usr/lib/x86_64-linux-gnu/openssl-1.0.0"
-export LD_PRELOAD="$SNAP/usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 $SNAP/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0"
+#export OPENSSL_ENGINES="$SNAP/usr/lib/x86_64-linux-gnu/openssl-1.0.0"
+#export LD_PRELOAD="$SNAP/usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 $SNAP/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0"
 
 #exec $SNAP/zoom/qtdiag &
 
