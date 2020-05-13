@@ -45,6 +45,6 @@ fi
 export OPENSSL_ENGINES="$SNAP/usr/lib/x86_64-linux-gnu/openssl-1.0.0"
 export LD_PRELOAD="$SNAP/usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 $SNAP/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0"
 
-exec $SNAP/zoom/qtdiag &
+#exec $SNAP/zoom/qtdiag &
 
 exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1

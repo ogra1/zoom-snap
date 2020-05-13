@@ -123,6 +123,8 @@ parts:
       - libgl1-mesa-dri
       - libgl1-mesa-glx
       - libglib2.0-0
+      - libgnutls30
+      - libgnutls-openssl27
       - libnspr4
       - libnss3
       - libpcre3
