@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+# save the original LD_LIBRARY_PATH, and unset it to check the cache
+ORIGINAL_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH=""
+
+export FINAL_BINARY="$SNAP/zoom/zoom"
+# FINAL_BINARY should be set and exported to what the "real" final executable
+# that's run is so we can check that
+# an alternative would be to always run the "real" final executable immediately
+# after this script in the chain, and then check "$1" here, but that is probably
+# fragile
+if [ -z "$FINAL_BINARY" ]; then
+    echo "FINAL_BINARY unset, can't check the dynamic linker cache for correctness"
+else
+    # this is a bit tricky, we want to exit 0 if we didn't find a library, but
+    # exit 1 if we didn't _not_ find a library, so use the output phrase
+    # "=> not found" as what to look for from ldd
+    # TODO: make this less of a hack?
+    if ldd "$FINAL_BINARY" | grep "=> not found" | grep -q "=> not found"; then
+        # regenerate the cache first
+        export LD_LIBRARY_PATH="$ORIGINAL_LD_LIBRARY_PATH"
+    fi
+fi
+
+# execute the next command in the chain
+exec "$@"

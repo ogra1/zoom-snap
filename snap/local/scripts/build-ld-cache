@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# delete empty entries in the LD_LIBRARY_PATH
+# i.e. change "/a/b/c:/1/2/3::/other" into "/a/b/c:/1/2/3:/other"
+# if we don't do this, then ldconfig gets confused with "" as arguments of dirs
+# to add to the cache
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH//::/:}"
+# Remove leading empty element if it exists
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH#:}"
+# Remove trailing empty element if it exists
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH%:}"
+
+# run ldconfig on our LD_LIBRARY_PATH lib dirs
+IFS=':' read -ra PATHS <<< "$LD_LIBRARY_PATH"
+mkdir -p "$SNAP_DATA/etc"
+# ldconfig -v -C "$SNAP_DATA/fake-etc/ld.so.cache" -f "$SNAP_DATA/etc/ld.so.conf" "${PATHS[@]}"
+ldconfig -v -C "$SNAP_DATA/etc/ld.so.cache" "${PATHS[@]}"

@@ -18,7 +18,12 @@ architectures:
 
 apps:
   zoom-client:
-    command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/private-fontcache $SNAP/bin/launcher.sh
+    command: bin/launcher.sh
+    command-chain:
+       - bin/desktop-launch
+       - bin/check-ld-cache
+       - snap/command-chain/alsa-launch
+       - bin/private-fontcache
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       DISABLE_WAYLAND: 1
@@ -42,6 +47,8 @@ apps:
       - x11
 
 layout:
+  /etc/ld.so.cache:
+    bind-file: $SNAP_DATA/etc/ld.so.cache
   /sbin/killall5:
     bind-file: $SNAP/sbin/killall5
   /usr/bin/lscpu:
@@ -50,6 +57,16 @@ layout:
     bind: $SNAP/usr/share/X11/xkb
   /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+
+hooks:
+  install:
+    command-chain:
+      - bin/desktop-launch
+      - snap/command-chain/alsa-launch
+  post-refresh:
+    command-chain:
+      - bin/desktop-launch
+      - snap/command-chain/alsa-launch
 
 parts:
   qt5:
@@ -198,6 +215,10 @@ parts:
     plugin: dump
     after: [ yaru-cursors ]
     source: snap/local/scripts
+    organize:
+      build-ld-cache: bin/build-ld-cache
+      check-ld-cache: bin/check-ld-cache
+      private-fontcache: bin/private-fontcache
   cleanup:
     source: .
     plugin: nil
