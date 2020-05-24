@@ -18,7 +18,7 @@ architectures:
 
 apps:
   zoom-client:
-    command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/bin/launcher.sh
+    command: desktop-launch $SNAP/snap/command-chain/alsa-launch $SNAP/private-fontcache $SNAP/bin/launcher.sh
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       DISABLE_WAYLAND: 1
@@ -194,10 +194,14 @@ parts:
       cp -a usr/share/icons/Yaru/cursor.theme $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru/
     build-packages:
       - wget
+  snap-helpers:
+    plugin: dump
+    after: [ yaru-cursors ]
+    source: snap/local/scripts
   cleanup:
     source: .
     plugin: nil
-    after: [ yaru-cursors ]
+    after: [ snap-helpers ]
     override-build: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
       cp -av launcher.sh $SNAPCRAFT_PART_INSTALL/bin/

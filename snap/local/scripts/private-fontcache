@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#########################################
+# Only use the snap's private fontcache #
+#########################################
+
+# ensure_dir_exists calls `mkdir -p` if the given path is not a directory.
+# This speeds up execution time by avoiding unnecessary calls to mkdir.
+#
+# Usage: ensure_dir_exists <path> [<mkdir-options>]...
+function ensure_dir_exists() {
+  [ -d "$1" ] ||  mkdir -p "$@"
+}
+
+# Set $REALHOME to the users real home directory
+REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
+
+# Set config folder to local path
+export XDG_CONFIG_HOME="$SNAP_USER_DATA/.config"
+ensure_dir_exists "$XDG_CONFIG_HOME"
+chmod 700 "$XDG_CONFIG_HOME"
+
+function make_user_fontconfig {
+  echo "<fontconfig>"
+  echo "  <dir>$REALHOME/.local/share/fonts</dir>"
+  echo "  <dir>$REALHOME/.fonts</dir>"
+  echo "  <cachedir prefix=\"xdg\">fontconfig</cachedir>"
+  echo "  <cachedir>$SNAP_DATA/fontconfig</cachedir>"
+  echo "  <include ignore_missing=\"yes\">/etc/fonts/fonts.conf</include>"
+  if [ ! -z $SNAP_DESTKOP_RUNTIME ]; then
+    echo "  <include ignore_missing=\"yes\">${SNAP_DESKTOP_RUNTIME}/etc/fonts/fonts.conf</include>"
+  fi
+  echo "</fontconfig>"
+}
+
+ensure_dir_exists "$XDG_CONFIG_HOME/fontconfig"
+make_user_fontconfig > "$XDG_CONFIG_HOME/fontconfig/fonts.conf"
+
+export FONTCONFIG_FILE=${XDG_CONFIG_HOME}/fontconfig/fonts.conf
+
+exec "$@"
