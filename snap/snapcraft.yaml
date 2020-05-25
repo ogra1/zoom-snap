@@ -61,11 +61,11 @@ layout:
 hooks:
   install:
     command-chain:
-      - bin/desktop-launch
+      - snap/command-chain/snapcraft-runner
       - snap/command-chain/alsa-launch
   post-refresh:
     command-chain:
-      - bin/desktop-launch
+      - snap/command-chain/snapcraft-runner
       - snap/command-chain/alsa-launch
 
 parts:
