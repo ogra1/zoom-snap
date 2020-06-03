@@ -27,7 +27,7 @@ function make_user_fontconfig {
   echo "  <cachedir prefix=\"xdg\">fontconfig</cachedir>"
   echo "  <cachedir>$SNAP_DATA/fontconfig</cachedir>"
   echo "  <include ignore_missing=\"yes\">/etc/fonts/fonts.conf</include>"
-  if [ ! -z $SNAP_DESTKOP_RUNTIME ]; then
+  if [ ! -z $SNAP_DESKTOP_RUNTIME ]; then
     echo "  <include ignore_missing=\"yes\">${SNAP_DESKTOP_RUNTIME}/etc/fonts/fonts.conf</include>"
   fi
   echo "</fontconfig>"
