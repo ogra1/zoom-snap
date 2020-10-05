@@ -43,6 +43,7 @@ apps:
       - screen-inhibit-control
       - system-observe
       - unity7
+      - wayland
       - x11
 
 layout:
