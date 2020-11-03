@@ -2,9 +2,11 @@
 
 ZOOM_LOGS="$SNAP_USER_DATA/.zoom/logs"
 LOGFILE="$ZOOM_LOGS/zoom-terminal.log"
+UPSTREAM_LOGFILE="$ZOOM_LOGS/zoom_stdout_stderr.log"
 
 mkdir -p $ZOOM_LOGS
 mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
+mv -uf "$UPSTREAM_LOGFILE" "$UPSTREAM_LOGFILE.old" 2>/dev/null || true
 
 # scale according to dpi
 DPI="$(xrdb -query 2>/dev/null| grep dpi | sed 's/^.*\t//;s/\..*$//')"
@@ -40,11 +42,5 @@ if [ -n "$SCALE" ]; then
   echo "$DPI dpi, using scale factor: $SCALE" >>"$LOGFILE" 2>&1
   export QT_SCALE_FACTOR="$SCALE"
 fi
-
-# make sure libssl is found
-#export OPENSSL_ENGINES="$SNAP/usr/lib/x86_64-linux-gnu/openssl-1.0.0"
-#export LD_PRELOAD="$SNAP/usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 $SNAP/usr/lib/x86_64-linux-gnu/libssl.so.1.0.0"
-
-#exec $SNAP/zoom/qtdiag &
 
 exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
