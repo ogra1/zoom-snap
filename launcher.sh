@@ -43,4 +43,19 @@ if [ -n "$SCALE" ]; then
   export QT_SCALE_FACTOR="$SCALE"
 fi
 
-exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
+if echo "$@" | grep -q "\-\-transcoding"; then
+    LOGFILE="$ZOOM_LOGS/zoom-transcode.log"
+    TR_PATH="--path=$SNAP_USER_DATA/Documents/Zoom/"
+    last_opt=${@##* }
+    case $last_opt in
+        /*)
+            TR_PATH="--path=$last_opt"
+        ;;
+        --path=*)
+            TR_PATH="$last_opt"
+        ;;
+    esac
+    exec $SNAP/zoom/zoom --transcoding "$TR_PATH" >> "$LOGFILE" 2>&1
+else
+    exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
+fi
