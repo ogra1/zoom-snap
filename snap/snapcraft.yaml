@@ -47,6 +47,10 @@ apps:
       - wayland
       - x11
 
+hooks:
+  configure:
+    plugs: [ desktop ]
+
 layout:
   /sbin/killall5:
     bind-file: $SNAP/sbin/killall5
