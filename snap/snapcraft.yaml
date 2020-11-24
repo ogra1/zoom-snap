@@ -168,8 +168,10 @@ parts:
       - libsqlite3-0
       - libssl1.0.0
       - libtinfo5
+      - libwayland-client0
       - libwayland-cursor0
       - libwayland-egl1
+      - libwayland-server0
       - libx11-6
       - libxcb-image0
       - libxcb-keysyms1
