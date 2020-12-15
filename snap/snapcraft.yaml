@@ -27,6 +27,7 @@ apps:
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       DISABLE_WAYLAND: 1
+      ALWAYS_USE_PULSEAUDIO: 1
     desktop: usr/share/applications/Zoom.desktop
     plugs:
       - audio-playback
