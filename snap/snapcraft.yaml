@@ -25,7 +25,7 @@ apps:
        - snap/command-chain/alsa-launch
        - bin/private-fontcache
     environment:
-      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
+      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom
       DISABLE_WAYLAND: 1
       ALWAYS_USE_PULSEAUDIO: 1
     desktop: usr/share/applications/Zoom.desktop
