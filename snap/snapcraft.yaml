@@ -50,7 +50,9 @@ apps:
 
 hooks:
   configure:
-    plugs: [ desktop ]
+    plugs:
+      - desktop
+      - system-observe
 
 layout:
   /sbin/killall5:
@@ -62,7 +64,7 @@ layout:
   /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
   /etc/os/release:
-    symlink: /var/lib/snapd/hostfs/etc/os-release
+    symlink: $SNAP_DATA/os-release
 
 parts:
   qt5:
