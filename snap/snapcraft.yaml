@@ -64,7 +64,7 @@ layout:
   /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
   /etc/os/release:
-    symlink: $SNAP_USER_DATA/os-release
+    symlink: $SNAP_DATA/os-release
 
 parts:
   qt5:

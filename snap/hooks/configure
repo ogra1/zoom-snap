@@ -1,5 +1,11 @@
 #!/bin/sh -e
 
+if [ -e /var/lib/snapd/hostfs/etc/os-release ]; then
+    cp /var/lib/snapd/hostfs/etc/os-release $SNAP_DATA/
+else
+    logger -t $SNAP_NAME "can not find os-release file !"
+fi
+
 mkdir -p $SNAP_DATA/fontconfig
 
 echo "<fontconfig>" > ${SNAP_DATA}/fontconfig/fonts.conf
