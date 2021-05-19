@@ -13,6 +13,3 @@ echo "</fontconfig>" >> ${SNAP_DATA}/fontconfig/fonts.conf
 export FONTCONFIG_FILE=${SNAP_DATA}/fontconfig/fonts.conf
 
 exec ${SNAP}/snap/command-chain/snapcraft-runner ${SNAP}/usr/bin/fc-cache --force --system-only --verbose
-
-# hack to fix wayland screen sharing
-cp /var/lib/snapd/hostfs/etc/os-release $SNAP_DATA/ || true

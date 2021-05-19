@@ -43,6 +43,10 @@ if [ -n "$SCALE" ]; then
   export QT_SCALE_FACTOR="$SCALE"
 fi
 
+if [ -e /var/lib/snapd/hostfs/etc/os-release ]; then
+    cp /var/lib/snapd/hostfs/etc/os-release $SNAP_USER_DATA/
+fi
+
 if echo "$@" | grep -q "\-\-transcoding"; then
     LOGFILE="$ZOOM_LOGS/zoom-transcode.log"
     TR_PATH="--path=$SNAP_USER_DATA/Documents/Zoom/"
