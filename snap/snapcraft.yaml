@@ -61,6 +61,8 @@ layout:
     bind: $SNAP/usr/share/X11/xkb
   /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /etc/os/release:
+    symlink: /var/lib/snapd/hostfs/etc/os-release
 
 parts:
   qt5:
@@ -105,6 +107,9 @@ parts:
       sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
       sed -i s/T_AUTO_S/XXXXXXXX/g opt/zoom/ZoomLauncher
       sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/libQt5Network.so.5.*.* opt/zoom/zopen
+
+      # try fixing hardcoded /etc/os-release to allow wayland screen sharing
+      sed -i "s;/os-release;/os/release;" opt/zoom/zoom
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
