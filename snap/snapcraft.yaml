@@ -112,6 +112,7 @@ parts:
 
       # try fixing hardcoded /etc/os-release to allow wayland screen sharing
       sed -i "s;/os-release;/os/release;" opt/zoom/zoom
+      sed -i "s;/os-release;/os/release;" opt/zoom/libQt5Core.so.5.*.*
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
