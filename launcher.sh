@@ -8,23 +8,25 @@ mkdir -p $ZOOM_LOGS
 mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
 mv -uf "$UPSTREAM_LOGFILE" "$UPSTREAM_LOGFILE.old" 2>/dev/null || true
 
-# scale according to dpi
-DPI="$(xrdb -query 2>/dev/null| grep dpi | sed 's/^.*\t//;s/\..*$//')"
-if [ -n "$DPI" ]; then
-  if [ "$DPI" -le 96 ]; then
-          SCALE=""
-  elif [ "$DPI" -le 120 ]; then
-          SCALE=1.25
-  elif [ "$DPI" -le 144 ]; then
-          SCALE=1.5
-  elif [ "$DPI" -le 192 ]; then
-          SCALE=2
-  elif [ "$DPI" -le 240 ]; then
-          SCALE=2.5
-  elif [ "$DPI" -le 288 ]; then
-          SCALE=3
-  elif [ "$DPI" -le 384 ]; then
-          SCALE=4
+# scale according to dpi on x11
+if [ "$XDG_SESSION_TYPE" != "wayland" ]; then
+  DPI="$(xrdb -query 2>/dev/null| grep dpi | sed 's/^.*\t//;s/\..*$//')"
+  if [ -n "$DPI" ]; then
+    if [ "$DPI" -le 96 ]; then
+            SCALE=""
+    elif [ "$DPI" -le 120 ]; then
+            SCALE=1.25
+    elif [ "$DPI" -le 144 ]; then
+            SCALE=1.5
+    elif [ "$DPI" -le 192 ]; then
+            SCALE=2
+    elif [ "$DPI" -le 240 ]; then
+            SCALE=2.5
+    elif [ "$DPI" -le 288 ]; then
+            SCALE=3
+    elif [ "$DPI" -le 384 ]; then
+            SCALE=4
+    fi
   fi
 fi
 
