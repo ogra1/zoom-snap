@@ -1,4 +1,4 @@
-[![Snap Status](https://build.snapcraft.io/badge/ogra1/zoom-snap.svg)](https://build.snapcraft.io/user/ogra1/zoom-snap)
+[![Zoom Client](https://snapcraft.io/zoom-client/badge.svg)](https://snapcraft.io/zoom-client)
 
 # zoom-client snap
 
@@ -27,6 +27,9 @@ To install the snap package, simply use
 ```
 sudo snap install zoom-client
 ```
+### Note:
+On some distributions, please install the snap using `--devmode` (e.g. Pop). 
+
 Details about installing on various distributions that do not come with snapd out of the box can be found at the bottom of https://snapcraft.io/zoom-client
 
 # Building
