@@ -17,6 +17,9 @@ architectures:
   - build-on: amd64
     run-on: amd64
 
+assumes:
+  - command-chain
+  
 apps:
   zoom-client:
     command: bin/launcher.sh
@@ -24,6 +27,7 @@ apps:
        - bin/desktop-launch
        - snap/command-chain/alsa-launch
        - bin/private-fontcache
+       - bin/homeishome-launch        
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$LD_LIBRARY_PATH
       ALWAYS_USE_PULSEAUDIO: 1
@@ -67,6 +71,11 @@ layout:
     symlink: $SNAP_DATA/os-release
 
 parts:
+  homeishome-launch:
+    plugin: nil
+    stage-snaps:
+      - homeishome-launch   
+
   qt5:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
     source-subdir: qt
