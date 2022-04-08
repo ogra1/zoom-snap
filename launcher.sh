@@ -45,6 +45,8 @@ if [ -n "$SCALE" ]; then
   export QT_SCALE_FACTOR="$SCALE"
 fi
 
+export CHROME_DEVEL_SANDBOX=" "
+
 if echo "$@" | grep -q "\-\-transcoding"; then
     LOGFILE="$ZOOM_LOGS/zoom-transcode.log"
     TR_PATH="--path=$SNAP_USER_DATA/Documents/Zoom/"
