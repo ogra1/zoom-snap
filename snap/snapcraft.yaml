@@ -130,7 +130,10 @@ parts:
         #VER="$(strings $SNAPCRAFT_PART_INSTALL/zoom/zoom|grep \
         #     "($(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt|sed 's/^[0-9].[0-9].//'))" | \
         #     sed 's/(//;s/)//;s/ /-/')"
-      VER="$(strings $SNAPCRAFT_PART_INSTALL/zoom/zoom | grep "[0-9].[0-9]*.[0-9] ([0-9]*)"|head -1)"
+      VER="$(strings $SNAPCRAFT_PART_INSTALL/zoom/zoom | \
+           grep "[0-9].[0-9]*.[0-9] ([0-9]*)" | \
+                                             head -1 | \
+                                             sed 's/ (/./;s/)//')"
       snapcraftctl set-version "$VER"
     build-packages:
       - binutils
