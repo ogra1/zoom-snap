@@ -45,7 +45,6 @@ if [ -n "$SCALE" ]; then
   export QT_SCALE_FACTOR="$SCALE"
 fi
 
-export CHROME_DEVEL_SANDBOX=" "
 
 if echo "$@" | grep -q "\-\-transcoding"; then
     LOGFILE="$ZOOM_LOGS/zoom-transcode.log"
@@ -61,5 +60,5 @@ if echo "$@" | grep -q "\-\-transcoding"; then
     esac
     exec $SNAP/zoom/zoom --transcoding "$TR_PATH" >> "$LOGFILE" 2>&1
 else
-    exec $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
+    $SNAP/zoom/ZoomLauncher --no-sandbox "$@" >> "$LOGFILE" 2>&1
 fi

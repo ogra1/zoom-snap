@@ -33,6 +33,7 @@ apps:
       - audio-record
       - camera
       - desktop
+      - gsettings
       - hardware-observe
       - home
       - network
@@ -43,10 +44,15 @@ apps:
       - removable-media
       - screencast-legacy
       - screen-inhibit-control
+      - shared-memory
       - system-observe
       - unity7
       - wayland
       - x11
+
+plugs:
+  shared-memory:
+    private: true
 
 hooks:
   configure:
