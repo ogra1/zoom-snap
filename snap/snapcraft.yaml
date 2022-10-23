@@ -162,11 +162,13 @@ parts:
       - libglib2.0-0
       - libgnutls30
       - libgnutls-openssl27
+      - libgomp1
       - libnspr4
       - libnss3
       - libpcre3
       - libpulse0
       - libpulse-mainloop-glib0
+      - libqt53danimation5
       - libqt53dcore5
       - libqt53dinput5
       - libqt53dlogic5
@@ -176,9 +178,11 @@ parts:
       - libqt5concurrent5
       - libqt5core5a
       - libqt5dbus5
+      - libqt5location5
       - libqt5multimedia5
       - libqt5multimedia5-plugins
       - libqt5network5
+      - libqt5positioning5
       - libqt5printsupport5
       - libqt5qml5
       - libqt5quickcontrols2-5
