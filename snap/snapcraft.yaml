@@ -33,6 +33,7 @@ apps:
     plugs:
       - audio-playback
       - audio-record
+      - browser-support
       - camera
       - desktop
       - gsettings
