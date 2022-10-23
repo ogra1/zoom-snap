@@ -278,3 +278,6 @@ parts:
       find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
       find $SNAPCRAFT_PRIME/usr/share -type d -empty -delete
       rm -rf $SNAPCRAFT_PRIME/usr/lib/gcc
+      # make sandbox suid root
+      chown root.root $SNAPCRAFT_PRIME/zoom/cef/chrome-sandbox
+      chmod 4755 $SNAPCRAFT_PRIME/zoom/cef/chrome-sandbox

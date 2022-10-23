@@ -59,5 +59,5 @@ if echo "$@" | grep -q "\-\-transcoding"; then
     esac
     exec $SNAP/zoom/zoom --transcoding "$TR_PATH" >> "$LOGFILE" 2>&1
 else
-    $SNAP/zoom/ZoomLauncher --no-sandbox "$@" >> "$LOGFILE" 2>&1
+    $SNAP/zoom/ZoomLauncher "$@" >> "$LOGFILE" 2>&1
 fi
