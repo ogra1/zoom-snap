@@ -33,7 +33,7 @@ apps:
     plugs:
       - audio-playback
       - audio-record
-      - browser-support
+      - browser-sandbox
       - camera
       - desktop
       - gsettings
@@ -54,8 +54,9 @@ apps:
       - x11
 
 plugs:
-  shared-memory:
-    private: true
+  browser-sandbox:
+    interface: browser-support
+    allow-sandbox: true
 
 hooks:
   configure:
