@@ -257,7 +257,7 @@ parts:
       for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name '*lib*'); do
         echo "checking duplicates: $(basename $lib)"
         if ! echo "$lib" | grep -q -e "libicuuc.so" -e "libicui18n.so" -e "libicudata.so"; then
-          for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*"); do
+          for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*" -type f); do
             rm -fv $files
           done
         fi
