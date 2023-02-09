@@ -263,8 +263,8 @@ parts:
         fi
       done
       # Qt needs libssl 1.0 and gets confused if 1.1 is around
-      rm usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libssl.so.1.1
-      rm usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libcrypto.so.1.1
+      rm -fv usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libssl.so.1.1
+      rm -fv usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libcrypto.so.1.1
       # clean up unused cruft
       for CRUFT in bug lintian man themes; do
         rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
