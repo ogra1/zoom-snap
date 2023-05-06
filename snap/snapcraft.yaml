@@ -254,11 +254,11 @@ parts:
     override-prime: |
       snapcraftctl prime
       # remove any duplicated libs
-      for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name '*lib*'); do
+      for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name 'lib*.so*'); do
         echo "checking duplicates: $(basename $lib)"
-        if ! echo "$lib" | grep -q -e "libicuuc.so" -e "libicui18n.so" -e "libicudata.so"; then
-          for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*" -type f); do
-            rm -fv $files
+        if ! echo "$lib" | grep -Eq "^(libicuuc|libicui18n|libicudata)\.so"; then
+          for file in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "$(basename $lib)*" -type f); do
+            rm -fv $file
           done
         fi
       done
