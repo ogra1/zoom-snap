@@ -1,5 +1,5 @@
 name: zoom-client
-base: core18
+base: core22
 adopt-info: zoom
 summary: ZOOM Cloud Meetings
 description: |
@@ -17,19 +17,18 @@ assumes:
 
 architectures:
   - build-on: amd64
-    run-on: amd64
+    build-for: amd64
 
 apps:
   zoom-client:
     command: bin/launcher.sh
     command-chain:
-       - bin/desktop-launch
-       - snap/command-chain/alsa-launch
-       - bin/private-fontcache
+      - snap/command-chain/alsa-launch
     environment:
-      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom
+      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/zoom/cef:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET
       ALWAYS_USE_PULSEAUDIO: 1
     desktop: usr/share/applications/Zoom.desktop
+    extensions: [ gnome ]
     plugs:
       - audio-playback
       - audio-record
@@ -61,47 +60,15 @@ plugs:
 hooks:
   configure:
     plugs:
-      - desktop
       - system-observe
 
 layout:
-  /sbin/killall5:
-    bind-file: $SNAP/sbin/killall5
-  /usr/bin/lscpu:
-    bind-file: $SNAP/usr/bin/lscpu
-  /usr/share/X11/xkb:
-    bind: $SNAP/usr/share/X11/xkb
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
-  /etc/os/release:
+  /etc/os_release:
     symlink: $SNAP_DATA/os-release
 
 parts:
-  qt5:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: qt
-    plugin: make
-    make-parameters: ["FLAVOR=qt5"]
-    build-packages:
-      - qtbase5-dev
-      - dpkg-dev
-    stage-packages:
-      - libxkbcommon0
-      - ttf-ubuntu-font-family
-      - dmz-cursor-theme
-      - light-themes
-      - adwaita-icon-theme
-      - gnome-themes-standard
-      - shared-mime-info
-      - libqt5gui5
-      - libgdk-pixbuf2.0-0
-      - libgtk2.0-0
-      - libqt5svg5 # for loading icon themes which are svg
-      - try: [appmenu-qt5] # not available on core18
-      - locales-all
   alsa-mixin:
     plugin: dump
-    after: [ qt5 ]
     source: https://github.com/diddlesnaps/snapcraft-alsa.git
     source-subdir: snapcraft-assets
     build-packages:
@@ -113,7 +80,6 @@ parts:
     source: https://zoom.us/client/latest/zoom_amd64.deb
     source-type: deb
     plugin: nil
-    after: [ alsa-mixin ]
     override-build: |
       # unset hardcoded LD_LIBRARY_PATHs
       sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
@@ -121,8 +87,8 @@ parts:
       sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/Qt/lib/libQt5Network.so.* opt/zoom/zopen
 
       # try fixing hardcoded /etc/os-release to allow wayland screen sharing
-      sed -i "s;/os-release;/os/release;" opt/zoom/zoom
-      sed -i "s;/os-release;/os/release;" opt/zoom/Qt/lib/libQt5Core.so.*
+      sed -i "s;/os-release;/os_release;" opt/zoom/zoom
+      sed -i "s;/os-release;/os_release;" opt/zoom/Qt/lib/libQt5Core.so.*
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
@@ -137,38 +103,26 @@ parts:
       sed -i 's|Exec=.*|Exec=zoom-client %U|g' \
         $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
 
-        #VER="$(strings $SNAPCRAFT_PART_INSTALL/zoom/zoom|grep \
-        #     "($(cat $SNAPCRAFT_PART_INSTALL/zoom/version.txt|sed 's/^[0-9].[0-9].//'))" | \
-        #     sed 's/(//;s/)//;s/ /-/')"
       VER="$(strings $SNAPCRAFT_PART_INSTALL/zoom/zoom | \
            grep "[0-9].[0-9]*.[0-9] ([0-9]*)" | \
                                              head -1 | \
                                              sed 's/ (/./;s/)//')"
-      snapcraftctl set-version "$VER"
+      craftctl set version="$VER"
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp -av $SNAPCRAFT_PROJECT_DIR/launcher.sh $SNAPCRAFT_PART_INSTALL/bin/
     build-packages:
       - binutils
     stage-packages:
-      - ibus
-      - libatk-bridge2.0-0
-      - libatk1.0-0
-      - libatspi2.0-0
-      - libcairo-gobject2
-      - libdbus-1-3
-      - libegl1-mesa
-      - libepoxy0
-      - libfontconfig1
-      - libgtk-3-0
-      - libgl1-mesa-dri
-      - libgl1-mesa-glx
-      - libglib2.0-0
-      - libgnutls30
-      - libgnutls-openssl27
-      - libgomp1
-      - libnspr4
-      - libnss3
-      - libpcre3
-      - libpulse0
-      - libpulse-mainloop-glib0
+      - libaom3
+      - libcodec2-1.0
+      - libdav1d5
+      - libdouble-conversion3
+      - libgsm1
+      - libx264-163
+      - libx265-199
+      - libmd4c0
+      - libmfx1
+      - libnuma1
       - libqt53danimation5
       - libqt53dcore5
       - libqt53dinput5
@@ -177,108 +131,54 @@ parts:
       - libqt53dquickscene2d5
       - libqt53drender5
       - libqt5concurrent5
-      - libqt5core5a
-      - libqt5dbus5
-      - libqt5location5
-      - libqt5multimedia5
-      - libqt5multimedia5-plugins
-      - libqt5network5
-      - libqt5positioning5
-      - libqt5printsupport5
-      - libqt5qml5
-      - libqt5quickcontrols2-5
-      - libqt5quickparticles5
-      - libqt5quicktemplates2-5
-      - libqt5quick5
-      - libqt5sql5
-      - libqt5waylandclient5
-      - libqt5widgets5
+      - libqt5gamepad5
       - libqt5gui5
+      - libqt5gui5-gles
+      - libqt5multimedia5
+      - libqt5quickparticles5
+      - libqt5quickparticles5-gles
+      - libqt5remoteobjects5
+      - libqt5sql5
       - libqt5xmlpatterns5
-      - libsm6
-      - libsqlite3-0
-      - libssl1.0.0
-      - libtinfo5
-      - libwayland-client0
-      - libwayland-cursor0
-      - libwayland-egl1
-      - libwayland-server0
-      - libx11-6
+      - libshine3
+      - libsnappy1v5
+      - libsoxr0
+      - libva-drm2
+      - libva-x11-2
+      - libvdpau1
+      - libxcb-icccm4
       - libxcb-image0
       - libxcb-keysyms1
       - libxcb-randr0
+      - libxcb-render-util0
       - libxcb-shape0
-      - libxcb-shm0
-      - libxcb-xfixes0
+      - libxcb-util1
+      - libxcb-xinerama0
+      - libxcb-xkb1
       - libxcb-xtest0
-      - libxcomposite1
-      - libxcursor1
-      - libxi6
-      - libxinerama1
-      - xkb-data
-      - libxrandr2
-      - libxrender1
-      - libxslt1.1
-      - libxtst6
+      - libxkbcommon-x11-0
+      - libxvidcore4
+      - libzvbi0
       - pulseaudio-utils
-      - sysvinit-utils
-      - util-linux
-      - x11-xserver-utils
-  yaru-cursors:
-    plugin: nil
-    after: [ zoom ]
-    override-build: |
-      URL1="https://launchpad.net/ubuntu/focal/amd64/yaru-theme-icon"
-      URL2="https://launchpad.net/ubuntu/focal/+package/yaru-theme-icon"
-      DEB="$(wget -q -O- $URL1/$(wget -q -O- $URL2|grep amd64|grep href| \
-           sed 's/^.*\///;s/\".*$//'|tail -1)|grep \\.deb|sed 's/^.*href=\"//;s/\".*$//')"
-      wget -q -O- $DEB | dpkg -x - .
-      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru
-      cp -a usr/share/icons/Yaru/cursors $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru/
-      cp -a usr/share/icons/Yaru/cursor.theme $SNAPCRAFT_PART_INSTALL/usr/share/icons/Yaru/
-    build-packages:
-      - wget
-  snap-helpers:
-    plugin: dump
-    after: [ yaru-cursors ]
-    source: snap/local/scripts
-    organize:
-      private-fontcache: bin/private-fontcache
+    stage:
+      - -usr/lib/x86_64-linux-gnu/libharfbuzz.*
   cleanup:
     source: .
     plugin: nil
-    after: [ snap-helpers ]
-    override-build: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp -av launcher.sh $SNAPCRAFT_PART_INSTALL/bin/
+    after: [ zoom ]
     override-prime: |
-      snapcraftctl prime
+      craftctl default
       # remove any duplicated libs
-      for lib in $(find $SNAPCRAFT_PRIME/zoom/ -name '*lib*'); do
+      for lib in $(find $SNAPCRAFT_PRIME/zoom/ -type f -name "*.so*"); do
         echo "checking duplicates: $(basename $lib)"
-        if ! echo "$lib" | grep -q -e "libicuuc.so" -e "libicui18n.so" -e "libicudata.so"; then
-          for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*" -type f); do
-            rm -fv $files
-          done
-        fi
+        for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*" -type f); do
+          rm -fv $files
+        done
       done
-      # Qt needs libssl 1.0 and gets confused if 1.1 is around
-      rm -fv usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libssl.so.1.1
-      rm -fv usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libcrypto.so.1.1
       # clean up unused cruft
       for CRUFT in bug lintian man themes; do
         rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
       done
-      # drop unused icon themes (keep cursors)
-      for icons in $(ls -d usr/share/icons/*); do
-        ICONS="$(basename "$icons")"
-        if [ "$ICONS" != "Yaru" ] && [ "$ICONS" != "DMZ-White" ] && [ "$ICONS" != "DMZ-Black" ]; then
-          rm -rf usr/share/icons/$ICONS
-        fi
-      done
+      # drop all docs except licenses
       find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
       find $SNAPCRAFT_PRIME/usr/share -type d -empty -delete
-      rm -rf $SNAPCRAFT_PRIME/usr/lib/gcc
-      # make sandbox suid root
-      chown root.root $SNAPCRAFT_PRIME/zoom/cef/chrome-sandbox
-      chmod 4755 $SNAPCRAFT_PRIME/zoom/cef/chrome-sandbox

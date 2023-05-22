@@ -1,21 +1,13 @@
-#!/bin/sh -e
+#!/bin/sh
 
-if [ -e /var/lib/snapd/hostfs/etc/os-release ]; then
-    cp /var/lib/snapd/hostfs/etc/os-release $SNAP_DATA/
+logger -t $SNAP_NAME "attempting to find os-release file !"
+
+if snapctl is-connected system-observe; then
+  if [ -e /var/lib/snapd/hostfs/usr/lib/os-release ]; then
+      cp /var/lib/snapd/hostfs/usr/lib/os-release $SNAP_DATA/
+  else
+      logger -t $SNAP_NAME "can not find os-release file !"
+  fi
 else
-    logger -t $SNAP_NAME "can not find os-release file !"
+  logger -t $SNAP_NAME ": please connect the system-observe interface !"
 fi
-
-mkdir -p $SNAP_DATA/fontconfig
-
-echo "<fontconfig>" > ${SNAP_DATA}/fontconfig/fonts.conf
-echo "<cachedir>${SNAP_DATA}/fontconfig</cachedir>" >> ${SNAP_DATA}/fontconfig/fonts.conf
-echo "<include ignore_missing=\"yes\">/etc/fonts/fonts.conf</include>" >> ${SNAP_DATA}/fontconfig/fonts.conf
-if [ ! -z $SNAP_DESTKOP_RUNTIME ]; then
-  echo "<include ignore_missing=\"yes\">${SNAP_DESKTOP_RUNTIME}/etc/fonts/fonts.conf</include>" >> ${SNAP_DATA}/fontconfig/fonts.conf
-fi
-echo "</fontconfig>" >> ${SNAP_DATA}/fontconfig/fonts.conf
-
-export FONTCONFIG_FILE=${SNAP_DATA}/fontconfig/fonts.conf
-
-exec ${SNAP}/snap/command-chain/snapcraft-runner ${SNAP}/usr/bin/fc-cache --force --system-only --verbose
