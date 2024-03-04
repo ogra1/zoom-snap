@@ -162,6 +162,25 @@ parts:
       - pulseaudio-utils
     stage:
       - -usr/lib/x86_64-linux-gnu/libharfbuzz.*
+    prime: # remove all of mesa, we want to use it from the extension
+      - -usr/lib/x86_64-linux-gnu/dri
+      - -usr/lib/x86_64-linux-gnu/libgbm.so.1
+      - -usr/lib/x86_64-linux-gnu/libgbm.so.1.0.0
+      - -usr/lib/x86_64-linux-gnu/libglapi.so.0.0.0
+      - -usr/lib/x86_64-linux-gnu/libglapi.so.0
+      - -usr/lib/x86_64-linux-gnu/libEGL_mesa.so.0
+      - -usr/lib/x86_64-linux-gnu/libEGL_mesa.so.0.0.0
+      - -usr/lib/x86_64-linux-gnu/libEGL.so.1
+      - -usr/lib/x86_64-linux-gnu/libGLdispatch.so.0
+      - -usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0
+      - -usr/lib/x86_64-linux-gnu/libGLESv2.so.2
+      - -usr/lib/x86_64-linux-gnu/libGL.so.1
+      - -usr/lib/x86_64-linux-gnu/libGL.so.1.7.0
+      - -usr/lib/x86_64-linux-gnu/libGLX_indirect.so.0
+      - -usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0
+      - -usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0
+      - -usr/lib/x86_64-linux-gnu/libGLX.so.0
+      - -usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0
   cleanup:
     source: .
     plugin: nil
