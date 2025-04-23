@@ -1,5 +1,5 @@
 name: zoom-client
-base: core22
+base: core24
 adopt-info: zoom
 summary: ZOOM Cloud Meetings
 description: |
@@ -15,9 +15,8 @@ compression: lzo
 assumes:
   - snapd2.55
 
-architectures:
-  - build-on: amd64
-    build-for: amd64
+platforms:
+  amd64:
 
 apps:
   zoom-client:
@@ -25,8 +24,9 @@ apps:
     command-chain:
       - snap/command-chain/alsa-launch
     environment:
-      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/zoom/cef:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET
+      LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/zoom/cef:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
       ALWAYS_USE_PULSEAUDIO: 1
+      XDG_SESSION_TYPE: ""
     desktop: usr/share/applications/Zoom.desktop
     extensions: [ gnome ]
     plugs:
@@ -76,6 +76,7 @@ parts:
     stage-packages:
       - libasound2
       - libasound2-plugins
+
   zoom:
     source: https://zoom.us/client/latest/zoom_amd64.deb
     source-type: deb
@@ -91,34 +92,34 @@ parts:
       sed -i "s;/os-release;/os_release;" opt/zoom/Qt/lib/libQt5Core.so.*
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
-      cp -av opt/zoom $SNAPCRAFT_PART_INSTALL/
-      cp -av usr $SNAPCRAFT_PART_INSTALL/
+      cp -av opt/zoom $CRAFT_PART_INSTALL/
+      cp -av usr $CRAFT_PART_INSTALL/
 
       # remove danging symlink
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/bin/zoom
+      rm -rf $CRAFT_PART_INSTALL/usr/bin/zoom
 
       # fix icon and exec lines in desktop file
       sed -i 's|Icon=.*|Icon=${SNAP}/usr/share/pixmaps/Zoom.png|g' \
-        $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
+        $CRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
       sed -i 's|Exec=.*|Exec=zoom-client %U|g' \
-        $SNAPCRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
+        $CRAFT_PART_INSTALL/usr/share/applications/Zoom.desktop
 
-      VER="$(strings $SNAPCRAFT_PART_INSTALL/zoom/zoom | \
+      VER="$(strings $CRAFT_PART_INSTALL/zoom/zoom | \
            grep "[0-9].[0-9]*.[0-9] ([0-9]*)" | \
                                              head -1 | \
                                              sed 's/ (/./;s/)//')"
       craftctl set version="$VER"
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp -av $SNAPCRAFT_PROJECT_DIR/launcher.sh $SNAPCRAFT_PART_INSTALL/bin/
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      cp -av $SNAPCRAFT_PROJECT_DIR/launcher.sh $CRAFT_PART_INSTALL/bin/
     build-packages:
       - binutils
     stage-packages:
       - libaom3
-      - libcodec2-1.0
-      - libdav1d5
+      - libcodec2-1.2
+      - libdav1d7
       - libdouble-conversion3
       - libgsm1
-      - libx264-163
+      - libx264-164
       - libx265-199
       - libmd4c0
       - libmfx1
@@ -188,16 +189,16 @@ parts:
     override-prime: |
       craftctl default
       # remove any duplicated libs
-      for lib in $(find $SNAPCRAFT_PRIME/zoom/ -type f -name "*.so*"); do
+      for lib in $(find $CRAFT_PRIME/zoom/ -type f -name "*.so*"); do
         echo "checking duplicates: $(basename $lib)"
-        for files in $(find $SNAPCRAFT_PRIME/usr $SNAPCRAFT_PRIME/lib -name "*$(basename $lib)*" -type f); do
+        for files in $(find $CRAFT_PRIME/usr $CRAFT_PRIME/lib -name "*$(basename $lib)*" -type f); do
           rm -fv $files
         done
       done
       # clean up unused cruft
       for CRUFT in bug lintian man themes; do
-        rm -rf $SNAPCRAFT_PRIME/usr/share/$CRUFT
+        rm -rf $CRAFT_PRIME/usr/share/$CRUFT
       done
       # drop all docs except licenses
-      find $SNAPCRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
-      find $SNAPCRAFT_PRIME/usr/share -type d -empty -delete
+      find $CRAFT_PRIME/usr/share/doc/ -type f -not -name 'copyright' -delete
+      find $CRAFT_PRIME/usr/share -type d -empty -delete
