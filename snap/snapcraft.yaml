@@ -163,6 +163,7 @@ parts:
       - pulseaudio-utils
     stage:
       - -usr/lib/x86_64-linux-gnu/libharfbuzz.*
+      - -usr/lib/x86_64-linux-gnu/libasound.so.*
     prime: # remove all of mesa, we want to use it from the extension
       - -usr/lib/x86_64-linux-gnu/dri
       - -usr/lib/x86_64-linux-gnu/libgbm.so.1
