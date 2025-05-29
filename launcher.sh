@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 ZOOM_LOGS="$SNAP_USER_DATA/.zoom/logs"
 LOGFILE="$ZOOM_LOGS/zoom-terminal.log"
@@ -8,7 +8,11 @@ mkdir -p $ZOOM_LOGS
 mv -uf "$LOGFILE" "$LOGFILE.old" 2>/dev/null || true
 mv -uf "$UPSTREAM_LOGFILE" "$UPSTREAM_LOGFILE.old" 2>/dev/null || true
 
-export QT_QPA_PLATFORM=xcb
+if [ ! -n "$DISABLE_WAYLAND" ] && [ -n "$WAYLAND_DISPLAY" ]; then
+  export QT_QPA_PLATFORM=wayland
+else
+  export QT_QPA_PLATFORM=xcb
+fi
 
 if echo "$@" | grep -q "\-\-transcoding"; then
     LOGFILE="$ZOOM_LOGS/zoom-transcode.log"
