@@ -26,7 +26,6 @@ apps:
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/zoom/cef:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
       ALWAYS_USE_PULSEAUDIO: 1
-      XDG_SESSION_TYPE: ""
     desktop: usr/share/applications/Zoom.desktop
     extensions: [ gnome ]
     plugs:

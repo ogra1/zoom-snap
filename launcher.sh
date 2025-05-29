@@ -12,6 +12,7 @@ if [ ! -n "$DISABLE_WAYLAND" ] && [ -n "$WAYLAND_DISPLAY" ]; then
   export QT_QPA_PLATFORM=wayland
 else
   export QT_QPA_PLATFORM=xcb
+  export XDG_SESSION_TYPE=""
 fi
 
 if echo "$@" | grep -q "\-\-transcoding"; then
