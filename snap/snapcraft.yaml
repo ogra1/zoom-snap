@@ -147,6 +147,7 @@ parts:
       - libva-drm2
       - libva-x11-2
       - libvdpau1
+      - libxcb-cursor0
       - libxcb-icccm4
       - libxcb-image0
       - libxcb-keysyms1
