@@ -56,11 +56,23 @@ plugs:
   browser-sandbox:
     interface: browser-support
     allow-sandbox: true
+  shared-memory:
+    private: true
 
 hooks:
   configure:
     plugs:
       - system-observe
+
+slots:
+  dummymq:
+    interface: posix-mq
+    path: [/zoom,]
+    permissions:
+      - read
+      - write
+      - create
+      - delete
 
 layout:
   /etc/os_release:
