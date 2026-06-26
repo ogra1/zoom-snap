@@ -26,7 +26,6 @@ apps:
     environment:
       LD_LIBRARY_PATH: $SNAP/zoom/Qt/lib:$SNAP/zoom:$SNAP/zoom/cef:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
       ALWAYS_USE_PULSEAUDIO: 1
-      XDG_SESSION_TYPE: ""
     desktop: usr/share/applications/Zoom.desktop
     extensions: [ gnome ]
     plugs:
@@ -184,6 +183,20 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0
       - -usr/lib/x86_64-linux-gnu/libGLX.so.0
       - -usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0
+
+  schemas:
+    plugin: nil
+    build-packages:
+      - libglib2.0-bin
+    stage-packages:
+      - gnome-settings-daemon-common
+    override-prime: |
+      set -eux
+      craftctl default
+      glib-compile-schemas usr/share/glib-2.0/schemas
+    prime:
+      - usr/share/glib-2.0/schemas
+
   cleanup:
     source: .
     plugin: nil
