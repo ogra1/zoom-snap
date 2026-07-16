@@ -85,11 +85,11 @@ parts:
       # unset hardcoded LD_LIBRARY_PATHs
       sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
       sed -i s/T_AUTO_S/XXXXXXXX/g opt/zoom/ZoomLauncher
-      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/Qt/lib/libQt5Network.so.* opt/zoom/zopen opt/zoom/zoom
+      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/zopen opt/zoom/zoom
 
       # try fixing hardcoded /etc/os-release to allow wayland screen sharing
       sed -i "s;/os-release;/os_release;" opt/zoom/zoom
-      sed -i "s;/os-release;/os_release;" opt/zoom/Qt/lib/libQt5Core.so.*
+      sed -i "s;/os-release;/os_release;" opt/zoom/Qt/lib/libQt6Core.so.6
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $CRAFT_PART_INSTALL/
