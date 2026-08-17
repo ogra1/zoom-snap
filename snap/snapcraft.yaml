@@ -85,11 +85,11 @@ parts:
       # unset hardcoded LD_LIBRARY_PATHs
       sed -i s/D_LIBRAR/XXXXXXXX/g opt/zoom/ZoomLauncher
       sed -i s/T_AUTO_S/XXXXXXXX/g opt/zoom/ZoomLauncher
-      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/Qt/lib/libQt5Network.so.* opt/zoom/zopen opt/zoom/zoom
+      sed -i s/LD_LIBRARY_PATH/XXXXXXXXXX_PATH/g opt/zoom/zopen opt/zoom/zoom
 
       # try fixing hardcoded /etc/os-release to allow wayland screen sharing
       sed -i "s;/os-release;/os_release;" opt/zoom/zoom
-      sed -i "s;/os-release;/os_release;" opt/zoom/Qt/lib/libQt5Core.so.*
+      sed -i "s;/os-release;/os_release;" opt/zoom/Qt/lib/libQt6Core.so.6
 
       sed -i "s;Prefix=/opt;Prefix=/snap/$SNAPCRAFT_PROJECT_NAME/current;" opt/zoom/qt.conf
       cp -av opt/zoom $CRAFT_PART_INSTALL/
@@ -114,39 +114,19 @@ parts:
     build-packages:
       - binutils
     stage-packages:
-      - libaom3
-      - libcodec2-1.2
-      - libdav1d7
-      - libdouble-conversion3
-      - libgsm1
-      - libx264-164
-      - libx265-199
-      - libmd4c0
-      - libmfx1
-      - libnuma1
-      - libqt53danimation5
-      - libqt53dcore5
-      - libqt53dinput5
-      - libqt53dlogic5
-      - libqt53dquick5
-      - libqt53dquickscene2d5
-      - libqt53drender5
-      - libqt5concurrent5
-      - libqt5gamepad5
-      - libqt5gui5
-      - libqt5gui5-gles
-      - libqt5multimedia5
-      - libqt5quickparticles5
-      - libqt5quickparticles5-gles
-      - libqt5remoteobjects5
-      - libqt5sql5
-      - libqt5xmlpatterns5
-      - libshine3
-      - libsnappy1v5
-      - libsoxr0
+      # NOTE (Qt6 migration, Zoom 7.1.0): Zoom now bundles its own complete Qt6
+      # (zoom/Qt/lib) and its own ffmpeg (zoom/libavcodec.so.61), both loaded via
+      # LD_LIBRARY_PATH. The old Qt5 stack, Intel QSV (libmfx1) and the system
+      # ffmpeg-v60 codec set were leftovers that nothing in the app links or
+      # dlopens (verified with objdump -p DT_NEEDED + strings across every ELF).
+      # Dropped below; the codecs re-pulled transitively via libasound2-plugins
+      # (libavcodec-extra60) are stripped in the cleanup part instead.
+      #
+      # HW-accel drivers — dlopen'd VA-API / VDPAU, invisible to the linter. Keep.
       - libva-drm2
       - libva-x11-2
       - libvdpau1
+      # xcb libs used by Zoom's bundled Qt6 xcb platform plugin. Keep.
       - libxcb-cursor0
       - libxcb-icccm4
       - libxcb-image0
@@ -159,8 +139,6 @@ parts:
       - libxcb-xkb1
       - libxcb-xtest0
       - libxkbcommon-x11-0
-      - libxvidcore4
-      - libzvbi0
       - pulseaudio-utils
     stage:
       - -usr/lib/x86_64-linux-gnu/libharfbuzz.*
@@ -187,7 +165,9 @@ parts:
   cleanup:
     source: .
     plugin: nil
-    after: [ zoom ]
+    after: [ alsa-mixin, zoom ]
+    build-snaps:
+      - gnome-46-2404   # runtime content snap of the gnome extension (see expand-extensions)
     override-prime: |
       craftctl default
       # remove any duplicated libs
@@ -197,6 +177,52 @@ parts:
           rm -fv $files
         done
       done
+
+      # --- Orphaned system ffmpeg-v60 + codec stack (Qt6-migration leftover) ---
+      # Zoom bundles its own ffmpeg (zoom/libavcodec.so.61); the system v60 stack is
+      # pulled transitively by libasound2-plugins (Depends: libavcodec-extra60) and is
+      # consumed only by libasound_module_pcm_a52 (an ALSA passthrough Zoom never uses;
+      # it forces PulseAudio). Verified: no zoom/ ELF links or dlopens any of these, and
+      # each codec below reverse-deps ONLY to the dead libavcodec.so.60 (objdump -p).
+      # Libs kept alive by other consumers (mp3lame/opus/vorbis via libsndfile,
+      # webp via libtiff, speexdsp via ALSA speex modules) are deliberately NOT listed.
+      for L in libavcodec.so.60 libavutil.so.58 libswresample.so.4 \
+               libvpx.so.9 libwebpmux.so.3 libspeex.so.1 librav1e.so.0 libtwolame.so.0 \
+               libSvtAv1Enc.so.1 libsnappy.so.1 libsoxr.so.0 librsvg-2.so.2 \
+               libtheora.so.0 libaom.so.3 libx264.so.164 libx265.so.199 \
+               libcodec2.so.1.2 libdav1d.so.7 libgsm.so.1 libshine.so.3 \
+               libxvidcore.so.4 libzvbi.so.0 libzvbi-chains.so.0 libnuma.so.1; do
+        rm -fv $CRAFT_PRIME/usr/lib/*/$L*
+      done
+      # ALSA modules that link the now-removed ffmpeg (would dangle otherwise).
+      rm -fv $CRAFT_PRIME/usr/lib/*/alsa-lib/libasound_module_pcm_a52.so \
+             $CRAFT_PRIME/usr/lib/*/alsa-lib/libasound_module_rate_lavrate*.so
+
+      # --- Orphaned Intel Media SDK / QSV (libmfx) — zero DT_NEEDED consumers ---
+      rm -rfv $CRAFT_PRIME/usr/lib/*/mfx
+      rm -fv  $CRAFT_PRIME/usr/lib/*/libmfx.so.1* \
+              $CRAFT_PRIME/usr/lib/*/libmfxhw64.so.1* \
+              $CRAFT_PRIME/usr/lib/*/libmfx-tracer.so.1*
+
+      # --- Orphaned libs the linter flagged with zero consumers ---
+      # jack server/net (nothing links them); hwy contrib/test (libjxl needs libhwy.so.1
+      # itself, but not the contrib/test variants).
+      rm -fv $CRAFT_PRIME/usr/lib/*/libjackserver.so.0* \
+             $CRAFT_PRIME/usr/lib/*/libjacknet.so.0* \
+             $CRAFT_PRIME/usr/lib/*/libhwy_contrib.so.1* \
+             $CRAFT_PRIME/usr/lib/*/libhwy_test.so.1*
+
+      # --- Dedupe against the gnome-46-2404 runtime content snap (ogra1's trick) ---
+      # Anything the content snap already provides is dead weight — it is always mounted
+      # at runtime. Protect our own metadata (meta/, snap/) which can name-collide.
+      cd /snap/gnome-46-2404/current
+      find . -type f,l | while read -r f; do
+        case "$f" in
+          ./meta/*|./snap/*) continue ;;
+        esac
+        rm -f "$CRAFT_PRIME/${f#./}"
+      done
+
       # clean up unused cruft
       for CRUFT in bug lintian man themes; do
         rm -rf $CRAFT_PRIME/usr/share/$CRUFT
