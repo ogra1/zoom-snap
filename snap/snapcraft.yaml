@@ -114,14 +114,6 @@ parts:
     build-packages:
       - binutils
     stage-packages:
-      # NOTE (Qt6 migration, Zoom 7.1.0): Zoom now bundles its own complete Qt6
-      # (zoom/Qt/lib) and its own ffmpeg (zoom/libavcodec.so.61), both loaded via
-      # LD_LIBRARY_PATH. The old Qt5 stack, Intel QSV (libmfx1) and the system
-      # ffmpeg-v60 codec set were leftovers that nothing in the app links or
-      # dlopens (verified with objdump -p DT_NEEDED + strings across every ELF).
-      # Dropped below; the codecs re-pulled transitively via libasound2-plugins
-      # (libavcodec-extra60) are stripped in the cleanup part instead.
-      #
       # HW-accel drivers — dlopen'd VA-API / VDPAU, invisible to the linter. Keep.
       - libva-drm2
       - libva-x11-2
@@ -167,7 +159,7 @@ parts:
     plugin: nil
     after: [ alsa-mixin, zoom ]
     build-snaps:
-      - gnome-46-2404   # runtime content snap of the gnome extension (see expand-extensions)
+      - gnome-46-2404
     override-prime: |
       craftctl default
       # remove any duplicated libs
@@ -179,13 +171,6 @@ parts:
       done
 
       # --- Orphaned system ffmpeg-v60 + codec stack (Qt6-migration leftover) ---
-      # Zoom bundles its own ffmpeg (zoom/libavcodec.so.61); the system v60 stack is
-      # pulled transitively by libasound2-plugins (Depends: libavcodec-extra60) and is
-      # consumed only by libasound_module_pcm_a52 (an ALSA passthrough Zoom never uses;
-      # it forces PulseAudio). Verified: no zoom/ ELF links or dlopens any of these, and
-      # each codec below reverse-deps ONLY to the dead libavcodec.so.60 (objdump -p).
-      # Libs kept alive by other consumers (mp3lame/opus/vorbis via libsndfile,
-      # webp via libtiff, speexdsp via ALSA speex modules) are deliberately NOT listed.
       for L in libavcodec.so.60 libavutil.so.58 libswresample.so.4 \
                libvpx.so.9 libwebpmux.so.3 libspeex.so.1 librav1e.so.0 libtwolame.so.0 \
                libSvtAv1Enc.so.1 libsnappy.so.1 libsoxr.so.0 librsvg-2.so.2 \
@@ -205,16 +190,12 @@ parts:
               $CRAFT_PRIME/usr/lib/*/libmfx-tracer.so.1*
 
       # --- Orphaned libs the linter flagged with zero consumers ---
-      # jack server/net (nothing links them); hwy contrib/test (libjxl needs libhwy.so.1
-      # itself, but not the contrib/test variants).
       rm -fv $CRAFT_PRIME/usr/lib/*/libjackserver.so.0* \
              $CRAFT_PRIME/usr/lib/*/libjacknet.so.0* \
              $CRAFT_PRIME/usr/lib/*/libhwy_contrib.so.1* \
              $CRAFT_PRIME/usr/lib/*/libhwy_test.so.1*
 
       # --- Dedupe against the gnome-46-2404 runtime content snap (ogra1's trick) ---
-      # Anything the content snap already provides is dead weight — it is always mounted
-      # at runtime. Protect our own metadata (meta/, snap/) which can name-collide.
       cd /snap/gnome-46-2404/current
       find . -type f,l | while read -r f; do
         case "$f" in
